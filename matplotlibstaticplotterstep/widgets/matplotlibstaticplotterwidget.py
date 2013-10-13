@@ -63,6 +63,8 @@ class MatplotlibStaticPlotterWidget(QDialog):
         self._ui.plotTypeComboBox.isEditable(False)
 
         # set data combo boxes
+        self._ui.data1ComboBox.addItem('None')
+        self._ui.data2ComboBox.addItem('NoneTa')
         for h in self.plotData.dataHeaders:
             self._ui.data1ComboBox.addItem(h)
             self._ui.data2ComboBox.addItem(h)
@@ -70,6 +72,7 @@ class MatplotlibStaticPlotterWidget(QDialog):
         self._ui.data2ComboBox.isEditable(False)
 
         # set classification combo box
+        self._ui.classComboBox.addItem('None')
         for c in self.plotData.classification.keys():
             self._ui.classComboBox.addItem(c)
         self._ui.classComboBox.isEditable(False)
@@ -85,14 +88,44 @@ class MatplotlibStaticPlotterWidget(QDialog):
             self._plotHistogram()
         elif plotType = 'boxplot':
             self._plotBoxplot()
-
-
-        #
+        else:
+            raise ValueError, 'invalid plot type'
 
     def _plotScatter(self):
         # get data to plot
-        data1 = self._ui.data1ComboBox.currentText.text()
-        data2 = self._ui.data2ComboBox.currentText.text()
+        data1Name = self._ui.data1ComboBox.currentText.text()
+        data2Name = self._ui.data2ComboBox.currentText.text()
+
+        if (data1Name=='None') or (data2Name=='None'):
+            raise ValueError, 'Data1 and Data2 cannot be None'
+
+        data = []
+        # check if classifications
+        classificationName = self._ui.classComboBox.currentText.text()
+        if classificationName=='None':
+            data1 = self.plotData.getData(data1Name)
+            data2 = self.plotData.getData(data2Name)
+            data.append((data1,data2, 'all'))
+        else:
+            classLabels = self.plotData.getLabelsForClass(classifcationName)
+            for label in classLabels:
+                data1 = self.plotData.getData(data1Name, classifcationName, label)
+                data2 = self.plotData.getData(data2Name, classifcationName, label)
+                data.append((data1, data2, label))
+            
+        canvas = self._ui.matplotlibPlotterWidget.canvas 
+        canvas.ax.clear()
+        canvas.ax.set_title('{d1Name} versus {d2Name}'.format(data1Name, data2Name))
+        canvas.ax.set_xlabel('{dName} ({dUnit})'.format(data1Name, self.plotData.getUnitsForHeader(data1Name)))
+        canvas.ax.set_ylabel('{dName} ({dUnit})'.format(data2Name, self.plotData.getUnitsForHeader(data2Name)))
+        plots = []
+        for data1, data2 in data:
+            plots.append( canvas.ax.scatter(data1, data2) )
+
+        if classficationName!='None':
+            canvas.fig.legend(plots, classLabels, loc=8)
+        canvas.draw()
+
 
     def _plotHistogram(self):
         # get data to plot
