@@ -23,7 +23,6 @@ from PySide.QtGui import QDialog, QFileDialog, QDialogButtonBox, QAbstractItemVi
 from PySide.QtCore import Qt
 
 from matplotlibstaticplotterstep.widgets.ui_matplotlibstaticplotterwidget import Ui_Dialog
-from matplotlibstaticplotterstep.matplotlibstaticplotterdata import StepState
 
 REQUIRED_STYLE_SHEET = 'border: 1px solid red; border-radius: 3px'
 DEFAULT_STYLE_SHEET = ''
@@ -33,8 +32,9 @@ class MatplotlibStaticPlotterWidget(QDialog):
     Configure dialog to present the user with the options to configure this step.
     '''
     plotTypes = ('scatterplot', 'historgram', 'boxplot')
+    colours = ('b', 'r', 'g', 'c', 'm', 'y', 'k', 'w')
 
-    def __init__(self, state, plotData, parent=None):
+    def __init__(self, plotData, parent=None):
         '''
         Constructor
         '''
@@ -44,7 +44,6 @@ class MatplotlibStaticPlotterWidget(QDialog):
         
         self.plotData = None
 
-        self.setState(state)
         self.setPlotData(plotData)
         self.populateMenus()
         self._makeConnections()
@@ -55,95 +54,85 @@ class MatplotlibStaticPlotterWidget(QDialog):
     def setPlotData(self, plotData):
         self.plotData = plotData
 
-    def populateMenus():
+    def populateMenus(self):
 
         # set plot types
         for t in self.plotTypes:
             self._ui.plotTypeComboBox.addItem(t)
-        self._ui.plotTypeComboBox.isEditable(False)
+        # self._ui.plotTypeComboBox.setEnabled(False)
 
         # set data combo boxes
         self._ui.data1ComboBox.addItem('None')
-        self._ui.data2ComboBox.addItem('NoneTa')
+        self._ui.data2ComboBox.addItem('None')
         for h in self.plotData.dataHeaders:
             self._ui.data1ComboBox.addItem(h)
             self._ui.data2ComboBox.addItem(h)
-        self._ui.data1ComboBox.isEditable(False)
-        self._ui.data2ComboBox.isEditable(False)
+        # self._ui.data1ComboBox.isEditable(False)
+        # self._ui.data2ComboBox.isEditable(False)
 
         # set classification combo box
         self._ui.classComboBox.addItem('None')
-        for c in self.plotData.classification.keys():
+        for c in self.plotData.classifications.keys():
             self._ui.classComboBox.addItem(c)
-        self._ui.classComboBox.isEditable(False)
+        # self._ui.classComboBox.isEditable(False)
 
     def plot(self):
 
         # determine plot type
-        plotType = self._ui.plotTypeComboBox.currentText().text()
+        plotType = self._ui.plotTypeComboBox.currentText()
+        # print plotType
 
         if plotType == 'scatterplot':
             self._plotScatter()
         elif plotType == 'historgram':
             self._plotHistogram()
-        elif plotType = 'boxplot':
+        elif plotType =='boxplot':
             self._plotBoxplot()
         else:
             raise ValueError, 'invalid plot type'
 
     def _plotScatter(self):
         # get data to plot
-        data1Name = self._ui.data1ComboBox.currentText.text()
-        data2Name = self._ui.data2ComboBox.currentText.text()
+        data1Name = self._ui.data1ComboBox.currentText()
+        data2Name = self._ui.data2ComboBox.currentText()
 
         if (data1Name=='None') or (data2Name=='None'):
             raise ValueError, 'Data1 and Data2 cannot be None'
 
         data = []
         # check if classifications
-        classificationName = self._ui.classComboBox.currentText.text()
+        classificationName = self._ui.classComboBox.currentText()
         if classificationName=='None':
             data1 = self.plotData.getData(data1Name)
             data2 = self.plotData.getData(data2Name)
-            data.append((data1,data2, 'all'))
+            data.append((data1,data2,'all'))
         else:
-            classLabels = self.plotData.getLabelsForClass(classifcationName)
+            classLabels = self.plotData.getLabelsForClass(classificationName)
             for label in classLabels:
-                data1 = self.plotData.getData(data1Name, classifcationName, label)
-                data2 = self.plotData.getData(data2Name, classifcationName, label)
+                data1 = self.plotData.getData(data1Name, classificationName, label)
+                data2 = self.plotData.getData(data2Name, classificationName, label)
                 data.append((data1, data2, label))
             
         canvas = self._ui.matplotlibPlotterWidget.canvas 
         canvas.ax.clear()
-        canvas.ax.set_title('{d1Name} versus {d2Name}'.format(data1Name, data2Name))
-        canvas.ax.set_xlabel('{dName} ({dUnit})'.format(data1Name, self.plotData.getUnitsForHeader(data1Name)))
-        canvas.ax.set_ylabel('{dName} ({dUnit})'.format(data2Name, self.plotData.getUnitsForHeader(data2Name)))
+        canvas.ax.set_title('{0} versus {1}'.format(data1Name, data2Name))
+        canvas.ax.set_xlabel('{0} ({1})'.format(data1Name, self.plotData.getUnitsForHeader(data1Name)))
+        canvas.ax.set_ylabel('{0} ({1})'.format(data2Name, self.plotData.getUnitsForHeader(data2Name)))
         plots = []
-        for data1, data2 in data:
-            plots.append( canvas.ax.scatter(data1, data2) )
+        for i, (data1, data2, label) in enumerate(data):
+            plots.append( canvas.ax.scatter(data1, data2, c=self.colours[i]) )
 
-        if classficationName!='None':
-            canvas.fig.legend(plots, classLabels, loc=8)
+        if classificationName!='None':
+            canvas.ax.legend(plots, classLabels, loc=0)
         canvas.draw()
 
 
     def _plotHistogram(self):
         # get data to plot
-        data = self._ui.data1ComboBox.currentText.text()
+        data = self._ui.data1ComboBox.currentText()
         
-   def _plotBoxplot(self):
+    def _plotBoxplot(self):
         # get data to plot
-        data1 = self._ui.data1ComboBox.currentText.text()
-        data2 = self._ui.data2ComboBox.currentText.text()
-         
-
-    def setState(self, state):
-        self.state = state
-        self._ui.identifierLineEdit.setText(self.state._identifier)
-    
-    def getState(self):
-        state = StepState()
-        state._identifier = self._ui.identifierLineEdit.text()   
-        return state
-
+        data1 = self._ui.data1ComboBox.currentText()
+        data2 = self._ui.data2ComboBox.currentText()
 

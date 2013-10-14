@@ -17,6 +17,8 @@ This file is part of MAP Client. (http://launchpad.net/mapclient)
     You should have received a copy of the GNU General Public License
     along with MAP Client.  If not, see <http://www.gnu.org/licenses/>..
 '''
+import string
+import random
 from PySide import QtGui
 
 from mountpoints.workflowstep import WorkflowStepMountPoint
@@ -32,7 +34,7 @@ class MatplotlibStaticPlotterStep(WorkflowStepMountPoint):
         super(MatplotlibStaticPlotterStep, self).__init__('Static Data Plotter', location)
         self._state = StepState()
         self._icon = QtGui.QImage(':/autosegmentation/images/autoseg.png')
-        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port', 'http://physiomeproject.org/workflow/1.0/rdf-schema#uses', 'ju#matplotlibstaticdata'))
+        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port', 'http://physiomeproject.org/workflow/1.0/rdf-schema#uses', 'ju#tabledata'))
            
         # The widget will be the interface widget for the user to see the
         # autosegmentation step and interact with it.
@@ -66,6 +68,7 @@ class MatplotlibStaticPlotterStep(WorkflowStepMountPoint):
         if not self._widget:
             self._widget = MatplotlibStaticPlotterWidget(dataIn)
             self._widget._ui.closeButton.clicked.connect(self._doneExecution)
+            self._widget.setModal(True)
 
         self._setCurrentWidget(self._widget)
      
