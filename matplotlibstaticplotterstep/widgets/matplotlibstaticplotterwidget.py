@@ -23,6 +23,7 @@ from PySide.QtGui import QDialog, QFileDialog, QDialogButtonBox, QAbstractItemVi
 from PySide.QtCore import Qt
 
 from matplotlibstaticplotterstep.widgets.ui_matplotlibstaticplotterwidget import Ui_Dialog
+import numpy as np
 
 REQUIRED_STYLE_SHEET = 'border: 1px solid red; border-radius: 3px'
 DEFAULT_STYLE_SHEET = ''
@@ -38,6 +39,7 @@ class MatplotlibStaticPlotterWidget(QDialog):
         '''
         Constructor
         '''
+
         QDialog.__init__(self, parent)
         self._ui = Ui_Dialog()
         self._ui.setupUi(self)
@@ -47,6 +49,8 @@ class MatplotlibStaticPlotterWidget(QDialog):
         self.setPlotData(plotData)
         self.populateMenus()
         self._makeConnections()
+
+        self.setModal(True)
         
     def _makeConnections(self):
         self._ui.plotButton.clicked.connect(self.plot)
@@ -95,7 +99,6 @@ class MatplotlibStaticPlotterWidget(QDialog):
         # get data to plot
         data1Name = self._ui.data1ComboBox.currentText()
         data2Name = self._ui.data2ComboBox.currentText()
-
         if (data1Name=='None') or (data2Name=='None'):
             raise ValueError, 'Data1 and Data2 cannot be None'
 
@@ -129,10 +132,71 @@ class MatplotlibStaticPlotterWidget(QDialog):
 
     def _plotHistogram(self):
         # get data to plot
-        data = self._ui.data1ComboBox.currentText()
+        data1Name = self._ui.data1ComboBox.currentText()
+        if data1Name=='None':
+            raise ValueError, 'Data1 cannot be None'
+
+        data = []
+        # check if classifications
+        classificationName = self._ui.classComboBox.currentText()
+        if classificationName=='None':
+            data1 = self.plotData.getData(data1Name)
+            data.append((data1,'all'))
+        else:
+            classLabels = self.plotData.getLabelsForClass(classificationName)
+            for label in classLabels:
+                data1 = self.plotData.getData(data1Name, classificationName, label)
+                data.append((data1, label))
+            
+        canvas = self._ui.matplotlibPlotterWidget.canvas 
+        canvas.ax.clear()
+        canvas.ax.set_title('{0} Distribution'.format(data1Name))
+        canvas.ax.set_xlabel('{0} ({1})'.format(data1Name, self.plotData.getUnitsForHeader(data1Name)))
+        canvas.ax.set_ylabel('Frequency')
+
+        plots = []
+        histData = [d[0] for d in data]
+        plots.append(canvas.ax.hist(histData))
+
+        # plots = []
+        # for i, (data1, label) in enumerate(data):
+        #     plots.append( canvas.ax.hist(data1, color=self.colours[i]) )
+
+        # if classificationName!='None':
+        #     canvas.ax.legend(plots, classLabels, loc=0)
+        canvas.draw()
         
     def _plotBoxplot(self):
         # get data to plot
-        data1 = self._ui.data1ComboBox.currentText()
-        data2 = self._ui.data2ComboBox.currentText()
+        data1Name = self._ui.data1ComboBox.currentText()
+        if data1Name=='None':
+            raise ValueError, 'Data1 cannot be None'
+
+        data = []
+        # check if classifications
+        classificationName = self._ui.classComboBox.currentText()
+        if classificationName=='None':
+            data1 = self.plotData.getData(data1Name)
+            data.append((data1,'all'))
+        else:
+            classLabels = self.plotData.getLabelsForClass(classificationName)
+            for label in classLabels:
+                data1 = self.plotData.getData(data1Name, classificationName, label)
+                data.append((data1, label))
+            
+        canvas = self._ui.matplotlibPlotterWidget.canvas 
+        canvas.ax.clear()
+        canvas.ax.set_title('{0} Distribution'.format(data1Name))
+        
+        canvas.ax.set_ylabel('{0} ({1})'.format(data1Name, self.plotData.getUnitsForHeader(data1Name)))
+
+        plots = []
+        boxData = np.array([d[0] for d in data]).T
+        plots.append(canvas.ax.boxplot(boxData))
+
+        if classificationName!='None':
+            canvas.ax.set_xlabel(classificationName)
+            canvas.ax.set_xticklabels([d[1] for d in data])
+
+        canvas.draw()
 

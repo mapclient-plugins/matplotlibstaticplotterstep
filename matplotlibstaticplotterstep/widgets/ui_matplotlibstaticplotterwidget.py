@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'matplotlibstaticplotterwidget.ui'
 #
-# Created: Sun Oct 13 22:05:45 2013
+# Created: Tue Oct 15 11:22:44 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,11 +12,25 @@ from PySide import QtCore, QtGui
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(888, 496)
-        self.matplotlibPlotterWidget = matplotlibPlotterWidget(Dialog)
-        self.matplotlibPlotterWidget.setGeometry(QtCore.QRect(330, 10, 531, 471))
+        Dialog.resize(875, 496)
+        self.groupBox = QtGui.QGroupBox(Dialog)
+        self.groupBox.setGeometry(QtCore.QRect(10, 10, 861, 491))
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.groupBox.sizePolicy().hasHeightForWidth())
+        self.groupBox.setSizePolicy(sizePolicy)
+        self.groupBox.setTitle("")
+        self.groupBox.setObjectName("groupBox")
+        self.matplotlibPlotterWidget = matplotlibPlotterWidget(self.groupBox)
+        self.matplotlibPlotterWidget.setGeometry(QtCore.QRect(340, 10, 521, 471))
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.matplotlibPlotterWidget.sizePolicy().hasHeightForWidth())
+        self.matplotlibPlotterWidget.setSizePolicy(sizePolicy)
         self.matplotlibPlotterWidget.setObjectName("matplotlibPlotterWidget")
-        self.gridLayoutWidget = QtGui.QWidget(Dialog)
+        self.gridLayoutWidget = QtGui.QWidget(self.groupBox)
         self.gridLayoutWidget.setGeometry(QtCore.QRect(10, 10, 311, 471))
         self.gridLayoutWidget.setObjectName("gridLayoutWidget")
         self.gridLayout = QtGui.QGridLayout(self.gridLayoutWidget)
@@ -28,8 +42,6 @@ class Ui_Dialog(object):
         self.plotTypeComboBox = QtGui.QComboBox(self.gridLayoutWidget)
         self.plotTypeComboBox.setObjectName("plotTypeComboBox")
         self.gridLayout.addWidget(self.plotTypeComboBox, 0, 1, 1, 1)
-        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout.addItem(spacerItem, 6, 1, 1, 1)
         self.data2Label = QtGui.QLabel(self.gridLayoutWidget)
         self.data2Label.setObjectName("data2Label")
         self.gridLayout.addWidget(self.data2Label, 2, 0, 1, 1)
@@ -58,6 +70,8 @@ class Ui_Dialog(object):
         self.closeButton = QtGui.QPushButton(self.gridLayoutWidget)
         self.closeButton.setObjectName("closeButton")
         self.gridLayout.addWidget(self.closeButton, 7, 1, 1, 1)
+        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.gridLayout.addItem(spacerItem, 4, 1, 1, 1)
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
