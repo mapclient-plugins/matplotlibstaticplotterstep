@@ -32,7 +32,7 @@ class MatplotlibStaticPlotterWidget(QDialog):
     '''
     Configure dialog to present the user with the options to configure this step.
     '''
-    plotTypes = ('scatterplot', 'historgram', 'boxplot')
+    plotTypes = ('scatterplot', 'histogram', 'boxplot')
     colours = ('b', 'r', 'g', 'c', 'm', 'y', 'k', 'w')
 
     def __init__(self, plotData, parent=None):
@@ -88,7 +88,7 @@ class MatplotlibStaticPlotterWidget(QDialog):
 
         if plotType == 'scatterplot':
             self._plotScatter()
-        elif plotType == 'historgram':
+        elif plotType == 'histogram':
             self._plotHistogram()
         elif plotType =='boxplot':
             self._plotBoxplot()
@@ -142,6 +142,7 @@ class MatplotlibStaticPlotterWidget(QDialog):
         if classificationName=='None':
             data1 = self.plotData.getData(data1Name)
             data.append((data1,'all'))
+            classLabels = None
         else:
             classLabels = self.plotData.getLabelsForClass(classificationName)
             for label in classLabels:
@@ -156,14 +157,15 @@ class MatplotlibStaticPlotterWidget(QDialog):
 
         plots = []
         histData = [d[0] for d in data]
-        plots.append(canvas.ax.hist(histData))
+        plots.append(canvas.ax.hist(histData, label=classLabels))
 
         # plots = []
         # for i, (data1, label) in enumerate(data):
         #     plots.append( canvas.ax.hist(data1, color=self.colours[i]) )
 
-        # if classificationName!='None':
-        #     canvas.ax.legend(plots, classLabels, loc=0)
+        if classificationName!='None':
+            # canvas.ax.legend(plots, classLabels, loc=0)
+            canvas.ax.legend()
         canvas.draw()
         
     def _plotBoxplot(self):
