@@ -54,7 +54,8 @@ class MatplotlibStaticPlotterWidget(QDialog):
         
     def _makeConnections(self):
         self._ui.plotButton.clicked.connect(self.plot)
- 
+        self._ui.plotTypeComboBox.activated.connect(self._plotTypeChanged)
+
     def setPlotData(self, plotData):
         self.plotData = plotData
 
@@ -79,6 +80,15 @@ class MatplotlibStaticPlotterWidget(QDialog):
         for c in self.plotData.classifications.keys():
             self._ui.classComboBox.addItem(c)
         # self._ui.classComboBox.isEditable(False)
+ 
+    def _plotTypeChanged(self):
+        # grey out data2 combo box if not a scatterplot
+        plotType = self._ui.plotTypeComboBox.currentText()
+        if plotType != 'scatterplot':
+            self._ui.data2ComboBox.setEnabled(False)
+        else:
+            self._ui.data1ComboBox.setEnabled(True)
+            self._ui.data2ComboBox.setEnabled(True)
 
     def plot(self):
 
@@ -123,7 +133,7 @@ class MatplotlibStaticPlotterWidget(QDialog):
         canvas.ax.set_ylabel('{0} ({1})'.format(data2Name, self.plotData.getUnitsForHeader(data2Name)))
         plots = []
         for i, (data1, data2, label) in enumerate(data):
-            plots.append( canvas.ax.scatter(data1, data2, c=self.colours[i]) )
+            plots.append( canvas.ax.scatter(data1, data2, s=40, c=self.colours[i]) )
 
         if classificationName!='None':
             canvas.ax.legend(plots, classLabels, loc=0)
