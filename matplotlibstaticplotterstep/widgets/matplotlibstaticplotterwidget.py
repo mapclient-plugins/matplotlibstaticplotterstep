@@ -210,5 +210,11 @@ class MatplotlibStaticPlotterWidget(QDialog):
             canvas.ax.set_xlabel(classificationName)
             canvas.ax.set_xticklabels([d[1] for d in data])
 
+        linewidth = 5.0
+        for box in plots:
+            for part in box.keys():
+                for line in box[part]:
+                    line.set_linewidth(linewidth)
+
         canvas.draw()
 
