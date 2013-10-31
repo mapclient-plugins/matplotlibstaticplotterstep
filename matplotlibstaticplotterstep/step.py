@@ -32,6 +32,7 @@ class MatplotlibStaticPlotterStep(WorkflowStepMountPoint):
     
     def __init__(self, location):
         super(MatplotlibStaticPlotterStep, self).__init__('Static Data Plotter', location)
+        self._category = 'Visualisation'
         self._state = StepState()
         self._icon = QtGui.QImage(':/autosegmentation/images/autoseg.png')
         self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port', 'http://physiomeproject.org/workflow/1.0/rdf-schema#uses', 'ju#tabledata'))
@@ -39,6 +40,7 @@ class MatplotlibStaticPlotterStep(WorkflowStepMountPoint):
         # The widget will be the interface widget for the user to see the
         # autosegmentation step and interact with it.
         self._widget = None
+        self._data = None
         
         # This step only requires an identifier which we can generate from
         # a char set.  This make the configuration of the step trivial.
@@ -64,9 +66,12 @@ class MatplotlibStaticPlotterStep(WorkflowStepMountPoint):
         '''
         pass
 
-    def execute(self, dataIn):
+    def setPortData(self, index, dataIn):
+        self._data = dataIn
+
+    def execute(self):
         if not self._widget:
-            self._widget = MatplotlibStaticPlotterWidget(dataIn)
+            self._widget = MatplotlibStaticPlotterWidget(self._data)
             self._widget._ui.closeButton.clicked.connect(self._doneExecution)
             self._widget.setModal(True)
 
