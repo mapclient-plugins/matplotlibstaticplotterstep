@@ -30,7 +30,7 @@ if current_dir not in sys.path:
 
 # import class that derives itself from the step mountpoint.  First
 # though import the icon resource for the step
-import matplotlibstaticplotterstep.widgets.resources_rc
+# import matplotlibstaticplotterstep.widgets.resources_rc
 from matplotlibstaticplotterstep import step
 
 ( _, tail ) = os.path.split(current_dir)

@@ -34,7 +34,7 @@ class MatplotlibStaticPlotterStep(WorkflowStepMountPoint):
         super(MatplotlibStaticPlotterStep, self).__init__('Static Data Plotter', location)
         self._category = 'Visualisation'
         self._state = StepState()
-        self._icon = QtGui.QImage(':/autosegmentation/images/autoseg.png')
+        # self._icon = QtGui.QImage(':/autosegmentation/images/autoseg.png')
         self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port', 'http://physiomeproject.org/workflow/1.0/rdf-schema#uses', 'ju#tabledata'))
            
         # The widget will be the interface widget for the user to see the
