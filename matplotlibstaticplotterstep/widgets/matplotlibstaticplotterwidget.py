@@ -54,6 +54,7 @@ class MatplotlibStaticPlotterWidget(QDialog):
         
     def _makeConnections(self):
         self._ui.plotButton.clicked.connect(self.plot)
+        self._ui.saveFigButton.clicked.connect(self._saveFig)
         self._ui.plotTypeComboBox.activated.connect(self._plotTypeChanged)
 
     def setPlotData(self, plotData):
@@ -225,3 +226,8 @@ class MatplotlibStaticPlotterWidget(QDialog):
 
         canvas.draw()
 
+
+    def _saveFig(self):
+        filename = self._ui.saveFigFilenameLineEdit.text()
+        dpi = int(self._ui.saveFigDpiLineEdit.text())
+        self._ui.matplotlibPlotterWidget.canvas.fig.savefig( filename, dpi=dpi, bbox_inches='tight' )

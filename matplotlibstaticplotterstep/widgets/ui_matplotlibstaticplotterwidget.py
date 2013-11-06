@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'matplotlibstaticplotterwidget.ui'
 #
-# Created: Wed Nov  6 16:01:03 2013
+# Created: Thu Nov  7 11:15:38 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -89,24 +89,29 @@ class Ui_Dialog(object):
         self.groupBox.setObjectName("groupBox")
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.groupBox)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.horizontalLayout = QtGui.QHBoxLayout()
-        self.horizontalLayout.setSizeConstraint(QtGui.QLayout.SetDefaultConstraint)
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.label = QtGui.QLabel(self.groupBox)
-        self.label.setObjectName("label")
-        self.horizontalLayout.addWidget(self.label)
-        self.lineEdit = QtGui.QLineEdit(self.groupBox)
-        self.lineEdit.setObjectName("lineEdit")
-        self.horizontalLayout.addWidget(self.lineEdit)
-        self.pushButton = QtGui.QPushButton(self.groupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.formLayout = QtGui.QFormLayout()
+        self.formLayout.setObjectName("formLayout")
+        self.saveFigDpiLabel = QtGui.QLabel(self.groupBox)
+        self.saveFigDpiLabel.setObjectName("saveFigDpiLabel")
+        self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.saveFigDpiLabel)
+        self.saveFigDpiLineEdit = QtGui.QLineEdit(self.groupBox)
+        self.saveFigDpiLineEdit.setObjectName("saveFigDpiLineEdit")
+        self.formLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.saveFigDpiLineEdit)
+        self.saveFigFilenameLabel = QtGui.QLabel(self.groupBox)
+        self.saveFigFilenameLabel.setObjectName("saveFigFilenameLabel")
+        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.saveFigFilenameLabel)
+        self.saveFigFilenameLineEdit = QtGui.QLineEdit(self.groupBox)
+        self.saveFigFilenameLineEdit.setObjectName("saveFigFilenameLineEdit")
+        self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.saveFigFilenameLineEdit)
+        self.saveFigButton = QtGui.QPushButton(self.groupBox)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
-        self.pushButton.setSizePolicy(sizePolicy)
-        self.pushButton.setObjectName("pushButton")
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.verticalLayout_2.addLayout(self.horizontalLayout)
+        sizePolicy.setHeightForWidth(self.saveFigButton.sizePolicy().hasHeightForWidth())
+        self.saveFigButton.setSizePolicy(sizePolicy)
+        self.saveFigButton.setObjectName("saveFigButton")
+        self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.saveFigButton)
+        self.verticalLayout_2.addLayout(self.formLayout)
         self.verticalLayout.addWidget(self.groupBox)
         self.closeButton = QtGui.QPushButton(self.widget_2)
         self.closeButton.setObjectName("closeButton")
@@ -125,8 +130,10 @@ class Ui_Dialog(object):
         self.data1Label.setText(QtGui.QApplication.translate("Dialog", "Data 1:", None, QtGui.QApplication.UnicodeUTF8))
         self.plotButton.setText(QtGui.QApplication.translate("Dialog", "Plot", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("Dialog", "Save Plot", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("Dialog", "Filename:", None, QtGui.QApplication.UnicodeUTF8))
-        self.pushButton.setText(QtGui.QApplication.translate("Dialog", "Save", None, QtGui.QApplication.UnicodeUTF8))
+        self.saveFigDpiLabel.setText(QtGui.QApplication.translate("Dialog", "DPI:", None, QtGui.QApplication.UnicodeUTF8))
+        self.saveFigDpiLineEdit.setText(QtGui.QApplication.translate("Dialog", "300", None, QtGui.QApplication.UnicodeUTF8))
+        self.saveFigFilenameLabel.setText(QtGui.QApplication.translate("Dialog", "Filename:", None, QtGui.QApplication.UnicodeUTF8))
+        self.saveFigButton.setText(QtGui.QApplication.translate("Dialog", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.closeButton.setText(QtGui.QApplication.translate("Dialog", "Close", None, QtGui.QApplication.UnicodeUTF8))
 
 from matplotlibplotterwidget import matplotlibPlotterWidget
