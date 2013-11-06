@@ -133,8 +133,15 @@ class MatplotlibStaticPlotterWidget(QDialog):
         canvas.ax.set_ylabel('{0} ({1})'.format(data2Name, self.plotData.getUnitsForHeader(data2Name)))
         plots = []
         for i, (data1, data2, label) in enumerate(data):
-            plots.append( canvas.ax.scatter(data1, data2, s=40, c=self.colours[i]) )
+            plots.append( canvas.ax.scatter(data1, data2, s=40, c=self.colours[i], picker=True) )
+    
+        # point picker
+        # def onPickScatterPoint(event):
+        #     ind = event.ind
 
+        # canvas.mpl_connect('pick_event', onPickScatterPoint)
+        
+        
         if classificationName!='None':
             canvas.ax.legend(plots, classLabels, loc=0)
         canvas.draw()
