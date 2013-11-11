@@ -27,6 +27,7 @@ import numpy as np
 
 REQUIRED_STYLE_SHEET = 'border: 1px solid red; border-radius: 3px'
 DEFAULT_STYLE_SHEET = ''
+import pdb
 
 class MatplotlibStaticPlotterWidget(QDialog):
     '''
@@ -51,6 +52,9 @@ class MatplotlibStaticPlotterWidget(QDialog):
         self._makeConnections()
 
         self.setModal(True)
+
+        self._scatterPickLabel = None
+        self._pickHandlerID = None
         
     def _makeConnections(self):
         self._ui.plotButton.clicked.connect(self.plot)
@@ -70,7 +74,7 @@ class MatplotlibStaticPlotterWidget(QDialog):
         # set data combo boxes
         self._ui.data1ComboBox.addItem('None')
         self._ui.data2ComboBox.addItem('None')
-        for h in self.plotData.dataHeaders:
+        for h in self.plotData.getHeaders():
             self._ui.data1ComboBox.addItem(h)
             self._ui.data2ComboBox.addItem(h)
         # self._ui.data1ComboBox.isEditable(False)
@@ -78,7 +82,7 @@ class MatplotlibStaticPlotterWidget(QDialog):
 
         # set classification combo box
         self._ui.classComboBox.addItem('None')
-        for c in self.plotData.classifications.keys():
+        for c in self.plotData._classifications.keys():
             self._ui.classComboBox.addItem(c)
         # self._ui.classComboBox.isEditable(False)
  
@@ -119,13 +123,15 @@ class MatplotlibStaticPlotterWidget(QDialog):
         if classificationName=='None':
             data1 = self.plotData.getData(data1Name)
             data2 = self.plotData.getData(data2Name)
-            data.append((data1,data2,'all'))
+            dataLabels = self.plotData.getRowLabels()
+            data.append((data1, data2, dataLabels, 'all'))
         else:
             classLabels = self.plotData.getLabelsForClass(classificationName)
             for label in classLabels:
                 data1 = self.plotData.getData(data1Name, classificationName, label)
                 data2 = self.plotData.getData(data2Name, classificationName, label)
-                data.append((data1, data2, label))
+                dataLabels = self.plotData.getRowLabels(classificationName, label)
+                data.append((data1, data2, dataLabels, label))
             
         canvas = self._ui.matplotlibPlotterWidget.canvas 
         canvas.ax.clear()
@@ -133,20 +139,52 @@ class MatplotlibStaticPlotterWidget(QDialog):
         canvas.ax.set_xlabel('{0} ({1})'.format(data1Name, self.plotData.getUnitsForHeader(data1Name)))
         canvas.ax.set_ylabel('{0} ({1})'.format(data2Name, self.plotData.getUnitsForHeader(data2Name)))
         plots = []
-        for i, (data1, data2, label) in enumerate(data):
-            plots.append( canvas.ax.scatter(data1, data2, s=40, c=self.colours[i], picker=True) )
+        self._scatterPickLabel = None
+        for i, (data1, data2, dataLabels, label) in enumerate(data):
+            picker = self._makePicker(data1, data2, dataLabels)
+            plots.append( canvas.ax.scatter(data1, data2, s=40, c=self.colours[i], picker=picker) )
     
-        # point picker
-        # def onPickScatterPoint(event):
-        #     ind = event.ind
-
-        # canvas.mpl_connect('pick_event', onPickScatterPoint)
-        
-        
         if classificationName!='None':
             canvas.ax.legend(plots, classLabels, loc=0)
+
         canvas.draw()
 
+    def _makePicker(self, data1, data2, labels):
+        ax = self._ui.matplotlibPlotterWidget.canvas.ax
+        maxDistX = (data1.max()-data1.min())*1e-2
+        maxDistY = (data2.max()-data2.min())*1e-2
+        print 'maxDist', maxDistX, maxDistY
+
+        def _getLabel(x,y):
+            distx = np.abs(x-data1)
+            disty = np.abs(y-data2)
+            matchInds = np.where( (distx<maxDistX) & (disty<maxDistY) )[0]
+            if len(matchInds) > 0:
+                return labels[matchInds[0]]
+            else:
+                return None
+            # return labels[np.where(dists<maxDist)[0][0]]
+
+        def _picker(artist, event):
+            offset = 1.005
+            x = event.xdata * offset
+            y = event.ydata * offset
+            label = _getLabel(event.xdata, event.ydata)
+            
+            if label:
+                print 'Pick event:', label, x, y
+                if self._scatterPickLabel==None:
+                    self._scatterPickLabel = ax.text(x, y, label, bbox=dict(facecolor='red', alpha=0.5))
+                else:
+                    self._scatterPickLabel.set_x(x)
+                    self._scatterPickLabel.set_y(y)
+                    self._scatterPickLabel.set_text(label)
+
+                self._ui.matplotlibPlotterWidget.canvas.draw()
+            
+            return None, None
+
+        return _picker
 
     def _plotHistogram(self):
         # get data to plot
