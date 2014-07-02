@@ -21,8 +21,8 @@ import string
 import random
 from PySide import QtGui
 
-from mountpoints.workflowstep import WorkflowStepMountPoint
-from matplotlibstaticplotterstep.widgets.matplotlibstaticplotterwidget import MatplotlibStaticPlotterWidget
+from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
+from mapclientplugins.matplotlibstaticplotterstep.widgets.matplotlibstaticplotterwidget import MatplotlibStaticPlotterWidget
 
 class MatplotlibStaticPlotterStep(WorkflowStepMountPoint):
     '''
