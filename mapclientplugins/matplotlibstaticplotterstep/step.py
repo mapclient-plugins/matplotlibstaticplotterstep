@@ -20,8 +20,8 @@ This file is part of MAP Client. (http://launchpad.net/mapclient)
 import string
 import random
 
-from mountpoints.workflowstep import WorkflowStepMountPoint
-from matplotlibstaticplotterstep.widgets.matplotlibstaticplotterwidget import MatplotlibStaticPlotterWidget
+from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
+from mapclientplugins.matplotlibstaticplotterstep.widgets.matplotlibstaticplotterwidget import MatplotlibStaticPlotterWidget
 
 class MatplotlibStaticPlotterStep(WorkflowStepMountPoint):
     '''

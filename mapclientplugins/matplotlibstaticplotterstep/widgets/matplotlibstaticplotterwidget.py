@@ -22,7 +22,7 @@ import os
 from PySide.QtGui import QDialog, QFileDialog, QDialogButtonBox, QAbstractItemView, QTableWidgetItem
 from PySide.QtCore import Qt
 
-from matplotlibstaticplotterstep.widgets.ui_matplotlibstaticplotterwidget import Ui_Dialog
+from mapclientplugins.matplotlibstaticplotterstep.widgets.ui_matplotlibstaticplotterwidget import Ui_Dialog
 import numpy as np
 
 REQUIRED_STYLE_SHEET = 'border: 1px solid red; border-radius: 3px'
