@@ -82,7 +82,7 @@ class MatplotlibStaticPlotterWidget(QDialog):
 
         # set classification combo box
         self._ui.classComboBox.addItem('None')
-        for c in self.plotData._classifications.keys():
+        for c in list(self.plotData._classifications.keys()):
             self._ui.classComboBox.addItem(c)
         # self._ui.classComboBox.isEditable(False)
  
@@ -108,14 +108,14 @@ class MatplotlibStaticPlotterWidget(QDialog):
         elif plotType =='boxplot':
             self._plotBoxplot()
         else:
-            raise ValueError, 'invalid plot type'
+            raise ValueError('invalid plot type')
 
     def _plotScatter(self):
         # get data to plot
         data1Name = self._ui.data1ComboBox.currentText()
         data2Name = self._ui.data2ComboBox.currentText()
         if (data1Name=='None') or (data2Name=='None'):
-            raise ValueError, 'Data1 and Data2 cannot be None'
+            raise ValueError('Data1 and Data2 cannot be None')
 
         data = []
         # check if classifications
@@ -153,7 +153,7 @@ class MatplotlibStaticPlotterWidget(QDialog):
         ax = self._ui.matplotlibPlotterWidget.canvas.ax
         maxDistX = (data1.max()-data1.min())*1e-2
         maxDistY = (data2.max()-data2.min())*1e-2
-        print 'maxDist', maxDistX, maxDistY
+        print('maxDist', maxDistX, maxDistY)
 
         def _getLabel(x,y):
             distx = np.abs(x-data1)
@@ -172,7 +172,7 @@ class MatplotlibStaticPlotterWidget(QDialog):
             label = _getLabel(event.xdata, event.ydata)
             
             if label:
-                print 'Pick event:', label, x, y
+                print('Pick event:', label, x, y)
                 if self._scatterPickLabel==None:
                     self._scatterPickLabel = ax.text(x, y, label, bbox=dict(facecolor='red', alpha=0.5))
                 else:
@@ -190,7 +190,7 @@ class MatplotlibStaticPlotterWidget(QDialog):
         # get data to plot
         data1Name = self._ui.data1ComboBox.currentText()
         if data1Name=='None':
-            raise ValueError, 'Data1 cannot be None'
+            raise ValueError('Data1 cannot be None')
 
         data = []
         # check if classifications
@@ -228,7 +228,7 @@ class MatplotlibStaticPlotterWidget(QDialog):
         # get data to plot
         data1Name = self._ui.data1ComboBox.currentText()
         if data1Name=='None':
-            raise ValueError, 'Data1 cannot be None'
+            raise ValueError('Data1 cannot be None')
 
         data = []
         # check if classifications
@@ -258,7 +258,7 @@ class MatplotlibStaticPlotterWidget(QDialog):
 
         linewidth = 5.0
         for box in plots:
-            for part in box.keys():
+            for part in list(box.keys()):
                 for line in box[part]:
                     line.set_linewidth(linewidth)
 

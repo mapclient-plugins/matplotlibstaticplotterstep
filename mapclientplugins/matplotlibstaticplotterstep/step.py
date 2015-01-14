@@ -19,22 +19,23 @@ This file is part of MAP Client. (http://launchpad.net/mapclient)
 '''
 import string
 import random
+from PySide import QtGui
 
 from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
 from mapclientplugins.matplotlibstaticplotterstep.widgets.matplotlibstaticplotterwidget import MatplotlibStaticPlotterWidget
 
 class MatplotlibStaticPlotterStep(WorkflowStepMountPoint):
     '''
-    Step for plotting static data in matplotlib.
+    Skeleton step which is intended to be used as a starting point
+    for new steps.
     '''
     
     def __init__(self, location):
         super(MatplotlibStaticPlotterStep, self).__init__('Static Data Plotter', location)
         self._category = 'Visualisation'
         self._state = StepState()
-        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
-                      'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
-                      'ju#tabledata'))
+        # self._icon = QtGui.QImage(':/autosegmentation/images/autoseg.png')
+        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port', 'http://physiomeproject.org/workflow/1.0/rdf-schema#uses', 'ju#tabledata'))
            
         # The widget will be the interface widget for the user to see the
         # autosegmentation step and interact with it.

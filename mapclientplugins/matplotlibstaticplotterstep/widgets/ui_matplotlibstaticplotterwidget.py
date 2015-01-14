@@ -136,4 +136,4 @@ class Ui_Dialog(object):
         self.saveFigButton.setText(QtGui.QApplication.translate("Dialog", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.closeButton.setText(QtGui.QApplication.translate("Dialog", "Close", None, QtGui.QApplication.UnicodeUTF8))
 
-from matplotlibplotterwidget import matplotlibPlotterWidget
+from .matplotlibplotterwidget import matplotlibPlotterWidget
