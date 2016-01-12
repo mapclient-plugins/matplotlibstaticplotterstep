@@ -56,13 +56,17 @@ class MatplotlibStaticPlotterStep(WorkflowStepMountPoint):
     def setIdentifier(self, identifier):
         self._identifier = identifier
      
-    def serialize(self, location):
-        '''There is nothing to be done here for this step.
+    def serialize(self):
         '''
-        pass
-     
-    def deserialize(self, location):
-        '''There is nothing to be done here for this step.
+        Add code to serialize this step to disk. Returns a json string for
+        mapclient to serialise.
+        '''
+        return ''
+
+    def deserialize(self, string):
+        '''
+        Add code to deserialize this step from disk. Parses a json string
+        given by mapclient
         '''
         pass
 
